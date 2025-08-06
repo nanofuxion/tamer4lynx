@@ -1,0 +1,36 @@
+{
+  "name": "tamer4lynx",
+  "version": "0.0.1",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "packages/example",
+    "packages/jiggle",
+    "packages/lynx-websockets"
+  ],
+  "keywords": [
+    "lynx",
+    "native",
+    "module",
+    "cli",
+    "android"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^24.1.0",
+    "@types/node-fetch": "^2.6.13",
+    "typescript": "^5.9.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "author": "Nanofuxion <ramnadroj@gmail.com> (https://github.com/nanofuxion)",
+  "license": "MIT",
+  "dependencies": {
+    "@types/adm-zip": "^0.5.7",
+    "adm-zip": "^0.5.16",
+    "commander": "^14.0.0",
+    "node-fetch": "^2.7.0"
+  }
+}

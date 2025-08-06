@@ -1,0 +1,6 @@
+{
+    "android": {
+        "moduleClassName": "com.nanofuxion.vibration.JiggleModule",
+        "sourceDir": "android"
+    }
+}

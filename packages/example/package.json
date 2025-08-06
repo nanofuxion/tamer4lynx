@@ -1,0 +1,37 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "type": "module",
+  "workspaces": ["../lynx-websockets"],
+  "scripts": {
+    "build": "rspeedy build",
+    "build:native": "rspeedy build && cp ./dist/main.lynx.bundle /Volumes/Storage/Projects/tamer4lynx/android/app/src/main/assets/main.lynx.bundle",
+    "check": "biome check --write",
+    "dev": "rspeedy dev",
+    "format": "biome format --write",
+    "preview": "rspeedy preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@lynx-js/react": "^0.112.1",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.0.6",
+    "@lynx-js/qrcode-rsbuild-plugin": "^0.4.0",
+    "@lynx-js/react-rsbuild-plugin": "^0.10.10",
+    "@lynx-js/rspeedy": "^0.10.4",
+    "@lynx-js/types": "3.3.0",
+    "@rsbuild/plugin-type-check": "1.2.3",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@types/react": "^18.3.23",
+    "@types/ws": "^8.18.1",
+    "jsdom": "^26.1.0",
+    "typescript": "~5.8.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "private": true
+}
