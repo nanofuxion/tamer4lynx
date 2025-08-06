@@ -1,6 +1,6 @@
 {
   "name": "tamer4lynx",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "module": "index.ts",
   "type": "module",
   "private": true,
