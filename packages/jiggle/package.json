@@ -1,0 +1,17 @@
+{
+  "name": "jiggle",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^24.1.0",
+    "@types/node-fetch": "^2.6.13",
+    "typescript": "^5.9.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "author": "Nanofuxion <ramnadroj@gmail.com> (https://github.com/nanofuxion)",
+  "dependencies": {}
+}
