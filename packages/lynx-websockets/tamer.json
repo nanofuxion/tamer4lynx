@@ -4,6 +4,7 @@
         "sourceDir": "android"
     },
     "ios": {
-        "podspecName": "LynxWebSockets"
+        "podspecPath": "ios/lynx-websockets.podspec",
+        "moduleClassName": "LynxWebSocketModule"
     }
 }

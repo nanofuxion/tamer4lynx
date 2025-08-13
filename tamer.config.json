@@ -1,13 +1,13 @@
 {
-    "android": {
-        "appName": "MyApp",
-        "packageName": "com.nanofuxion.myapp",
-        "sdk": "~/Library/Android/sdk",
-        "lynxProject": "packages/example"
-    },
-    "ios": {
-        "appName": "MyApp",
-        "bundleId": "com.nanofuxion.myapp",
-        "lynxProject": "packages/example"
-    }
+  "android": {
+    "appName": "MyApp",
+    "packageName": "com.nanofuxion.myapp",
+    "sdk": "~/Library/Android/sdk",
+    "lynxProject": "packages/example"
+  },
+  "ios": {
+    "appName": "MyApp",
+    "bundleId": "com.nanofuxion.MyApp",
+    "lynxProject": "packages/example"
+  }
 }

@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+
+import fs from 'fs';
+import path from 'path';
+
 import { program } from 'commander';
 // Make sure you have a package.json file in the same directory
 // with a "version" field for this import to work.
@@ -69,5 +73,52 @@ ios.command('bundle')
         ios_bundle();
     });
 
+program.command('link')
+    .option('-i, --ios', 'Link iOS native modules')
+    .option('-a, --android', 'Link Android native modules')
+    .option('-b, --both', 'Link both iOS and Android native modules')
+    .option('-s, --silent', 'Run in silent mode without outputting messages')
+    .description('Link native modules to the project')
+    .action(() => {
+        // console.error('The "link" command is deprecated. Please use "tamer4lynx ios link" or "tamer4lynx android link" instead.');
+        // Optionally, you can call the iOS or Android autolink functions directly here
+        if (program.opts().silent) {
+            console.log = () => {}; // Suppress output
+            console.error = () => {}; // Suppress errors
+            console.warn = () => {}; // Suppress warnings
+        }
+        if (program.opts().ios) {
+            ios_autolink();
+            return;
+        }
+        if (program.opts().android) {
+            android_autolink();
+            return;
+        }
+        ios_autolink();
+        android_autolink();
+    });
+
+program
+    .command('autolink')
+    .description('Auto-link native modules to the project')
+    .action(async () => {
+        const configPath = path.join(process.cwd(), 'tamer.config.json');
+        let config: any = {};
+        if (fs.existsSync(configPath)) {
+            config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        }
+
+        if (config.autolink) {
+            delete config.autolink;
+            console.log('Autolink disabled in tamer.config.json');
+        } else {
+            config.autolink = true;
+            console.log('Autolink enabled in tamer.config.json');
+        }
+
+        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+        console.log(`Updated ${configPath}`);
+    })
 
 program.parse();

@@ -4,6 +4,11 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "description": "A CLI tool for managing LynxJS native modules.",
+  "bin": {
+    "tamer": "./index.js",
+    "t4l": "./index.js"
+  },
   "workspaces": [
     "packages/example",
     "packages/jiggle",
