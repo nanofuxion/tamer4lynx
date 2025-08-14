@@ -62,6 +62,16 @@ Example output:
 
 ---
 
+### Asset Bundling
+
+**Note:** To ensure assets like images are bundled into the app, import them with the `?inline` suffix. For example:
+```js
+import logo from './assets/lynx-logo.png?inline';
+```
+This will include the asset directly in your app bundle.
+
+---
+
 ### Show Help & Version
 
 ```bash
