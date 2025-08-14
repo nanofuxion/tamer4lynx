@@ -3,6 +3,19 @@
 A CLI tool for creating, linking, and bundling native modules in Lynx projects.
 
 ## Configuration
+## Installation
+
+Install globally using npm:
+
+```bash
+npm i -g nanofuxion/tamer4lynx
+```
+
+Or with Bun:
+
+```bash
+bun add -g nanofuxion/tamer4lynx
+```
 
 Tamer4Lynx uses configuration files to manage your project.
 
@@ -26,7 +39,6 @@ Create this file in the root of your repository to define your main application'
 
 ---
 
-## Commands
 
 ### Show Help & Version
 
