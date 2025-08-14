@@ -145,6 +145,18 @@ Place this file in the root of each native module package you create.
 
 ---
 
+## Android Native Module References
+
+Working Android native modules:
+
+- [Jiggle: Android vibration module](https://github.com/nanofuxion/tamer4lynx/tree/main/packages/jiggle)
+- [Lynx-Websockets: Android websocket module](https://github.com/nanofuxion/tamer4lynx/tree/main/packages/lynx-websockets)
+
+---
+
+## Examples
+
+- [Example LynxJS project with Jiggle and Lynx-Websockets](https://github.com/nanofuxion/tamer4lynx/tree/main/packages/example)
 ## Contributing
 
 Contributions are welcome! Please feel free to submit issues or pull requests.
