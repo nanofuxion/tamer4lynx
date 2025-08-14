@@ -2,7 +2,7 @@
   "compilerOptions": {
     // Environment setup & latest features
     "lib": ["ESNext"],
-    "target": "ESNext",
+    "target": "esnext",
     "module": "nodenext",
     "moduleDetection": "force",
     "jsx": "react-jsx",
@@ -25,5 +25,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
-  }
+  },
+  "include": ["src/**/*", "index.js"],
+  "exclude": ["node_modules", "dist", "packages"]
 }

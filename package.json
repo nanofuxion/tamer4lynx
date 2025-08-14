@@ -9,11 +9,6 @@
     "tamer": "./dist/index.js",
     "t4l": "./dist/index.js"
   },
-  "workspaces": [
-    "packages/example",
-    "packages/jiggle",
-    "packages/lynx-websockets"
-  ],
   "keywords": [
     "lynx",
     "native",
