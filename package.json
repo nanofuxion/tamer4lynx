@@ -6,9 +6,14 @@
   "private": true,
   "description": "A CLI tool for managing LynxJS native modules.",
   "bin": {
-    "tamer": "./dist/index.js",
-    "t4l": "./dist/index.js"
+    "tamer": "./index.js",
+    "t4l": "./index.js"
   },
+  "workspaces": [
+    "packages/example",
+    "packages/jiggle",
+    "packages/lynx-websockets"
+  ],
   "keywords": [
     "lynx",
     "native",
@@ -16,10 +21,6 @@
     "cli",
     "android"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nanofuxion/tamer4lynx.git"
-  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node": "^24.1.0",
