@@ -38,8 +38,9 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 /ios
 /android
 src/android/gradle
-packages/*/ios
-packages/*/android
+packages/*/android/.gradle
+packages/*/android/build
+packages/*/android/.settings
 
 # temporarily ignore these files
 /base
