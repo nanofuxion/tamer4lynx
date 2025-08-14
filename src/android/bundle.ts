@@ -6,6 +6,14 @@ import { execSync } from 'child_process';
 let projectRoot: string;
 let lynxProject: string | undefined = undefined;
 
+/**
+ * This script automates the process of bundling the application and moving the output
+ * to the correct Android assets directory.
+ */
+function bundleAndDeploy() {
+
+
+
     try {
         const configPath = path.join(process.cwd(), "tamer.config.json");
         if (!fs.existsSync(configPath)) {
@@ -14,9 +22,9 @@ let lynxProject: string | undefined = undefined;
         const configRaw = fs.readFileSync(configPath, "utf8");
         const config = JSON.parse(configRaw);
 
-        if (!config.android?.lynxProject) {
+        if (!config?.lynxProject ) {
             lynxProject = process.cwd();
-        } else lynxProject = path.join(process.cwd(), config.android?.lynxProject);
+        } else lynxProject = path.join(process.cwd(), config?.lynxProject );
 
         
     } catch (error: any) {
@@ -24,11 +32,6 @@ let lynxProject: string | undefined = undefined;
         process.exit(1);
     }
 
-/**
- * This script automates the process of bundling the application and moving the output
- * to the correct Android assets directory.
- */
-function bundleAndDeploy() {
     // const androidRoot = projectRoot!;
     const lynxRoot = lynxProject!;
     const sourceBundlePath = path.join(lynxRoot, 'dist', 'main.lynx.bundle');

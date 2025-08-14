@@ -23,6 +23,28 @@ Tamer4Lynx uses configuration files to manage your project.
 
 Create this file in the root of your repository to define your main application's properties.
 
+#### Quick Init (Recommended)
+
+You can interactively generate your config file using:
+
+```bash
+t4l init
+```
+Or simply run:
+```bash
+t4l
+```
+If no arguments are provided, the CLI will launch the interactive setup.
+
+The script will prompt for:
+- Android app name
+- Android package name
+- Android SDK path (supports `~`, `$ENV_VAR`)
+- Whether to use the same name and bundle ID for iOS as Android
+- iOS app name and bundle ID (if not using Android values)
+- Lynx project path (relative to project root, optional)
+
+Example output:
 ```json
 {
   "android": {
@@ -33,12 +55,12 @@ Create this file in the root of your repository to define your main application'
   "ios": {
     "appName": "MyApp",
     "bundleId": "com.example.MyApp"
-  }
+  },
+  "lynxProject": "packages/example"
 }
 ```
 
 ---
-
 
 ### Show Help & Version
 

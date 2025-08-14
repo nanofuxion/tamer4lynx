@@ -14,10 +14,18 @@ import android_bundle from './src/android/bundle';
 import ios_create from './src/ios/create';
 import ios_autolink from './src/ios/autolink';
 import ios_bundle from './src/ios/bundle';
+import init from './src/common/init';
 
 program
     .version(version)
     .description('Tamer4Lynx CLI - A tool for managing Lynx projects');
+
+program
+    .command('init')
+    .description('Initialize tamer.config.json interactively')
+    .action(() => {
+        init();
+    });
 
 
 // Android commands
@@ -121,4 +129,12 @@ program
         console.log(`Updated ${configPath}`);
     })
 
-program.parse();
+
+
+// If no arguments or only node/index.js, run init
+if (process.argv.length <= 2 || (process.argv.length === 3 && process.argv[2] === 'init')) {
+    // Run init script and exit
+        Promise.resolve(init()).then(() => process.exit(0));
+} else {
+    program.parse();
+}

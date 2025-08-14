@@ -14,7 +14,7 @@ function bundleAndDeploy() {
         const configRaw = fs.readFileSync(configPath, "utf8");
         const config = JSON.parse(configRaw);
 
-        lynxProject = config.ios?.lynxProject ? path.join(process.cwd(), config.ios.lynxProject) : process.cwd();
+        lynxProject = config.lynxProject ? path.join(process.cwd(), config.lynxProject ) : process.cwd();
         appName = config.ios?.appName;
 
         if (!appName) {
