@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import os from "os"; // Import the 'os' module
-import { setupGradleWrapper } from "./getGradle";
+import { setupGradleWrapper } from "./getGradle.js";
 
 const create = () => {
     // --- Configuration Loading ---

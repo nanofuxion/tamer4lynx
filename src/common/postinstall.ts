@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import alink from "../android/autolink";
-import ilink from "../ios/autolink";
+import alink from "../android/autolink.js";
+import ilink from "../ios/autolink.js";
 
 (() => {
     const configPath = path.join(process.cwd(), 'tamer.config.json');

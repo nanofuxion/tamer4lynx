@@ -6,6 +6,7 @@ const autolink = () => {
     interface TamerConfig {
         ios?: {
             podspecPath?: string;
+            moduleClassName?: string;
         };
     }
 
@@ -13,6 +14,25 @@ const autolink = () => {
         name: string;
         config: TamerConfig;
         packagePath: string;
+    }
+
+    // --- Configuration Loading ---
+    let appName: string;
+    try {
+        const configPath = path.join(process.cwd(), 'tamer.config.json');
+        if (!fs.existsSync(configPath)) {
+            throw new Error('tamer.config.json not found in the project root.');
+        }
+        const configRaw = fs.readFileSync(configPath, 'utf8');
+        const config = JSON.parse(configRaw);
+        appName = config.ios?.appName;
+
+        if (!appName) {
+            throw new Error('"ios.appName" must be defined in tamer.config.json');
+        }
+    } catch (error: any) {
+        console.error(`❌ Error loading configuration: ${error.message}`);
+        process.exit(1);
     }
 
     // --- Constants & Paths ---
@@ -109,6 +129,23 @@ const autolink = () => {
         updateGeneratedSection(podfilePath, scriptContent.trim(), '# GENERATED AUTOLINK DEPENDENCIES START', '# GENERATED AUTOLINK DEPENDENCIES END');
     }
 
+    function generateSwiftExtensionsFile(packages: DiscoveredPackage[]): void {
+        const extensionsPath = path.join(iosProjectPath, appName, 'GeneratedLynxExtensions.swift');
+
+        const modulePackages = packages.filter(p => p.config.ios?.moduleClassName);
+
+        const registrations = modulePackages
+            .map(p => {
+                const moduleClassName = p.config.ios!.moduleClassName!;
+                return `        LynxEnv.sharedInstance().registerModule("${moduleClassName}", for: ${moduleClassName}.self)`;
+            })
+            .join('\n');
+
+        const swiftContent = `${registrations || '        // No native modules found to register.'}`;
+
+        updateGeneratedSection(extensionsPath, swiftContent, '// GENREATED AUTOLINK REGISTER START', '// GENREATED AUTOLINK REGISTER END');
+    }
+
     // --- Main Execution ---
     function run() {
         console.log('🔎 Finding Tamer4Lynx native packages for iOS...');
@@ -121,6 +158,7 @@ const autolink = () => {
         }
 
         updatePodfile(packages);
+        generateSwiftExtensionsFile(packages);
 
         console.log('✨ Autolinking complete for iOS. Please run `pod install` in the `ios` directory.');
     }
