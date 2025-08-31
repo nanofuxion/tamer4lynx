@@ -1,11 +1,13 @@
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 
 const autolink = () => {
     // --- Interfaces ---
     interface TamerConfig {
         ios?: {
             podspecPath?: string;
+            moduleClassName?: string; // e.g. "MyAwesomeModule" or "MyOrg.MyAwesomeModule"
         };
     }
 
@@ -36,13 +38,27 @@ const autolink = () => {
         const replacementBlock = `${startMarker}\n${newContent}\n${endMarker}`;
 
         if (regex.test(fileContent)) {
-            fileContent = fileContent.replace(regex, replacementBlock);
+            // Remove all existing generated blocks first to avoid creating duplicates,
+            // then insert a single replacement at the position of the first found start marker.
+            const firstStartIdx = fileContent.indexOf(startMarker);
+            // Remove all occurrences
+            fileContent = fileContent.replace(regex, '');
+
+            if (firstStartIdx !== -1) {
+                const before = fileContent.slice(0, firstStartIdx);
+                const after = fileContent.slice(firstStartIdx);
+                fileContent = `${before}${replacementBlock}${after}`;
+            } else {
+                // Fallback: append at end
+                fileContent += `\n${replacementBlock}\n`;
+            }
         } else {
+            // If markers aren't present at all — append at end and warn so user can add markers to control placement.
             console.warn(`⚠️ Could not find autolink markers in ${path.basename(filePath)}. Appending to the end of the file.`);
             fileContent += `\n${replacementBlock}\n`;
         }
 
-        fs.writeFileSync(filePath, fileContent);
+        fs.writeFileSync(filePath, fileContent, 'utf8');
         console.log(`✅ Updated autolinked section in ${path.basename(filePath)}`);
     }
 
@@ -63,7 +79,7 @@ const autolink = () => {
                     try {
                         const configRaw = fs.readFileSync(tamerConfigPath, 'utf8');
                         const config = JSON.parse(configRaw);
-                        if(config.ios){
+                        if (config.ios) {
                             packages.push({ name, config, packagePath });
                         }
                     } catch (e: any) {
@@ -109,6 +125,137 @@ const autolink = () => {
         updateGeneratedSection(podfilePath, scriptContent.trim(), '# GENERATED AUTOLINK DEPENDENCIES START', '# GENERATED AUTOLINK DEPENDENCIES END');
     }
 
+    /**
+     * Update LynxInitProcessor.swift with module registrations.
+     * Emits runtime-safe registrations using NSClassFromString to avoid compile-time
+     * dependency issues when modules are provided by CocoaPods.
+     */
+    function updateLynxInitProcessor(packages: DiscoveredPackage[]): void {
+        // Attempt to locate the app's generated Swift file. Prefer ios/<AppName>/LynxInitProcessor.swift
+        let appNameFromConfig: string | undefined;
+        try {
+            const cfgPath = path.join(process.cwd(), 'tamer.config.json');
+            if (fs.existsSync(cfgPath)) {
+                const cfgRaw = fs.readFileSync(cfgPath, 'utf8');
+                const cfg = JSON.parse(cfgRaw);
+                appNameFromConfig = cfg.ios?.appName;
+            }
+        } catch (e: any) {
+            // ignore and fallback
+        }
+
+        const candidatePaths: string[] = [];
+        if (appNameFromConfig) {
+            candidatePaths.push(path.join(iosProjectPath, appNameFromConfig, 'LynxInitProcessor.swift'));
+        }
+        candidatePaths.push(path.join(iosProjectPath, 'LynxInitProcessor.swift'));
+
+        const found = candidatePaths.find(p => fs.existsSync(p));
+        const lynxInitPath: string = (found ?? candidatePaths[0]) as string;
+
+        const iosPackages = packages.filter(p => p.config.ios && (p.config.ios as any).moduleClassName);
+
+        // --- Generate import statements for discovered native packages ---
+        function updateImportsSection(filePath: string, pkgs: DiscoveredPackage[]) {
+            const startMarker = '// GENERATED IMPORTS START';
+            const endMarker = '// GENERATED IMPORTS END';
+
+            if (pkgs.length === 0) {
+                const placeholder = '// No native imports found by Tamer4Lynx autolinker.';
+                // If markers exist, replace the block, otherwise try to insert after existing imports
+                updateGeneratedSection(filePath, placeholder, startMarker, endMarker);
+                return;
+            }
+
+            const imports = pkgs.map(pkg => {
+                // Use the last path segment as the Swift module name (handle scoped packages)
+                const raw = pkg.name.split('/').pop() || pkg.name;
+                const moduleName = raw.replace(/[^A-Za-z0-9_]/g, '_');
+                return `import ${moduleName}`;
+            }).join('\n');
+
+            // If the file already contains markers, let updateGeneratedSection handle replacement.
+            const fileContent = fs.readFileSync(filePath, 'utf8');
+            if (fileContent.indexOf(startMarker) !== -1) {
+                updateGeneratedSection(filePath, imports, startMarker, endMarker);
+                return;
+            }
+
+            // Otherwise insert the generated imports after the last existing import statement (if any),
+            // or after `import Foundation` specifically, or at the top as a fallback.
+            const importRegex = /^(import\s+[^\r\n]+)\r?\n/gm;
+            let match: RegExpExecArray | null = null;
+            let lastMatchEnd = -1;
+            while ((match = importRegex.exec(fileContent)) !== null) {
+                lastMatchEnd = importRegex.lastIndex;
+            }
+
+            const block = `${startMarker}\n${imports}\n${endMarker}`;
+            let newContent: string;
+
+            if (lastMatchEnd !== -1) {
+                const before = fileContent.slice(0, lastMatchEnd);
+                const after = fileContent.slice(lastMatchEnd);
+                newContent = `${before}\n${block}\n${after}`;
+            } else {
+                const foundationIdx = fileContent.indexOf('import Foundation');
+                if (foundationIdx !== -1) {
+                    const lineEnd = fileContent.indexOf('\n', foundationIdx);
+                    const insertPos = lineEnd !== -1 ? lineEnd + 1 : foundationIdx + 'import Foundation'.length;
+                    const before = fileContent.slice(0, insertPos);
+                    const after = fileContent.slice(insertPos);
+                    newContent = `${before}\n${block}\n${after}`;
+                } else {
+                    // Prepend at top
+                    newContent = `${block}\n\n${fileContent}`;
+                }
+            }
+
+            fs.writeFileSync(filePath, newContent, 'utf8');
+            console.log(`✅ Updated imports in ${path.basename(filePath)}`);
+        }
+
+        // Update imports first so registration lines can reference imported modules if needed
+        updateImportsSection(lynxInitPath, iosPackages);
+
+        if (iosPackages.length === 0) {
+            const placeholder = '        // No native modules found by Tamer4Lynx autolinker.';
+            updateGeneratedSection(lynxInitPath, placeholder, '// GENERATED AUTOLINK START', '        // GENERATED AUTOLINK END');
+            return;
+        }
+
+        const blocks = iosPackages.map((pkg, idx) => {
+            const classNameRaw = (pkg.config.ios as any).moduleClassName as string;
+
+            return [
+                `        // Register module from package: ${pkg.name}`,
+                `        globalConfig.register(${classNameRaw}.self)`,
+            ].join('\n');
+        });
+
+        const content = blocks.join('\n\n');
+        updateGeneratedSection(lynxInitPath, content, '// GENERATED AUTOLINK START', '        // GENERATED AUTOLINK END');
+    }
+
+    // --- Pod install helper ---
+    function runPodInstall(forcePath?: string) {
+        const podfilePath = forcePath ?? path.join(iosProjectPath, 'Podfile');
+        if (!fs.existsSync(podfilePath)) {
+            console.log('ℹ️ No Podfile found in ios directory; skipping `pod install`.');
+            return;
+        }
+
+        const cwd = path.dirname(podfilePath);
+        try {
+            console.log(`ℹ️ Running ` + '`pod install`' + ` in ${cwd}...`);
+            execSync('pod install', { cwd, stdio: 'inherit' });
+            console.log('✅ `pod install` completed successfully.');
+        } catch (e: any) {
+            console.warn(`⚠️ 'pod install' failed: ${e.message}`);
+            console.log('⚠️ You can run `pod install` manually in the ios directory.');
+        }
+    }
+
     // --- Main Execution ---
     function run() {
         console.log('🔎 Finding Tamer4Lynx native packages for iOS...');
@@ -121,8 +268,33 @@ const autolink = () => {
         }
 
         updatePodfile(packages);
+        updateLynxInitProcessor(packages);
 
-        console.log('✨ Autolinking complete for iOS. Please run `pod install` in the `ios` directory.');
+        // Attempt to run `pod install` automatically when a Podfile is present
+        // prefer running in ios/<AppName> if present
+        let appNameFromConfig: string | undefined;
+        try {
+            const cfgPath = path.join(process.cwd(), 'tamer.config.json');
+            if (fs.existsSync(cfgPath)) {
+                const cfgRaw = fs.readFileSync(cfgPath, 'utf8');
+                const cfg = JSON.parse(cfgRaw);
+                appNameFromConfig = cfg.ios?.appName;
+            }
+        } catch (e: any) {
+            // ignore and fallback
+        }
+
+        if (appNameFromConfig) {
+            const appPodfile = path.join(iosProjectPath, appNameFromConfig, 'Podfile');
+            if (fs.existsSync(appPodfile)) {
+                runPodInstall(appPodfile);
+                console.log('✨ Autolinking complete for iOS.');
+                return;
+            }
+        }
+
+        runPodInstall();
+        console.log('✨ Autolinking complete for iOS.');
     }
 
     run();

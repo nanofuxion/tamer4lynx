@@ -132,9 +132,11 @@ program
 
 
 // If no arguments or only node/index.js, run init
+
 if (process.argv.length <= 2 || (process.argv.length === 3 && process.argv[2] === 'init')) {
     // Run init script and exit
-        Promise.resolve(init()).then(() => process.exit(0));
+    Promise.resolve(init()).then(() => process.exit(0));
 } else {
     program.parse();
+    process.exit(0);
 }

@@ -12,7 +12,7 @@
   "workspaces": [
     "packages/example",
     "packages/jiggle",
-    "packages/lynx-websockets"
+    "packages/lynxwebsockets"
   ],
   "keywords": [
     "lynx",
