@@ -8790,7 +8790,7 @@ ${fileContent}`;
     updateImportsSection(lynxInitPath, iosPackages);
     if (iosPackages.length === 0) {
       const placeholder = "        // No native modules found by Tamer4Lynx autolinker.";
-      updateGeneratedSection(lynxInitPath, placeholder, "// GENERATED AUTOLINK START", "        // GENERATED AUTOLINK END");
+      updateGeneratedSection(lynxInitPath, placeholder, "// GENERATED AUTOLINK START", "// GENERATED AUTOLINK END");
       return;
     }
     const blocks = iosPackages.map((pkg, idx) => {
@@ -8804,7 +8804,7 @@ ${fileContent}`;
     const content = blocks.join(`
 
 `);
-    updateGeneratedSection(lynxInitPath, content, "// GENERATED AUTOLINK START", "        // GENERATED AUTOLINK END");
+    updateGeneratedSection(lynxInitPath, content, "// GENERATED AUTOLINK START", "// GENERATED AUTOLINK END");
   }
   function runPodInstall(forcePath) {
     const podfilePath = forcePath ?? path7.join(iosProjectPath, "Podfile");

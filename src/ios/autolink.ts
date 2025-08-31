@@ -220,7 +220,7 @@ const autolink = () => {
 
         if (iosPackages.length === 0) {
             const placeholder = '        // No native modules found by Tamer4Lynx autolinker.';
-            updateGeneratedSection(lynxInitPath, placeholder, '// GENERATED AUTOLINK START', '        // GENERATED AUTOLINK END');
+            updateGeneratedSection(lynxInitPath, placeholder, '// GENERATED AUTOLINK START', '// GENERATED AUTOLINK END');
             return;
         }
 
@@ -234,7 +234,7 @@ const autolink = () => {
         });
 
         const content = blocks.join('\n\n');
-        updateGeneratedSection(lynxInitPath, content, '// GENERATED AUTOLINK START', '        // GENERATED AUTOLINK END');
+        updateGeneratedSection(lynxInitPath, content, '// GENERATED AUTOLINK START', '// GENERATED AUTOLINK END');
     }
 
     // --- Pod install helper ---

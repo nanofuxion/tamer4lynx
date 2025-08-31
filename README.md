@@ -172,7 +172,7 @@ Place this file in the root of each native module package you create.
 
 ## Roadmap
 
-* [ ] Fix iOS linking
+* [x] Fix iOS linking
 * [ ] Restructure `create.ts` files
 
 ---
@@ -181,8 +181,10 @@ Place this file in the root of each native module package you create.
 
 Working native modules for both **Android** and **iOS**:
 
-- [Jiggle: Vibration module (Android & iOS)](https://github.com/nanofuxion/tamer4lynx/tree/main/packages/jiggle)
-- [Lynx-Websockets: Websocket module (Android & iOS)](https://github.com/nanofuxion/tamer4lynx/tree/main/packages/lynxwebsockets)
+- [Jiggle: Vibration module (Android & iOS)](https://github.com/nanofuxion/jiggle)
+- [Lynx-Websockets: Websocket module (Android & iOS)](https://github.com/nanofuxion/lynxwebsockets)
+
+**Note:** These modules are included as git submodules. The iOS autolinking feature is now fully functional and will automatically run `pod install` for you.
 
 ---
 

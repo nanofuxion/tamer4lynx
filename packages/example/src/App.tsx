@@ -62,7 +62,7 @@ export function App(props: {
   const onTap = useCallback(() => {
     'background only'
     setAlterLogo(prevAlterLogo => !prevAlterLogo)
-    // NativeModules.JiggleModule.vibrate(50);
+    NativeModules.JiggleModule.vibrate(50);
     
     // Send message through the WebSocket instance created in useEffect
     if (ws) {
