@@ -2,7 +2,7 @@
   "name": "example",
   "version": "1.0.0",
   "type": "module",
-  "workspaces": ["../lynx-websockets"],
+  "workspaces": ["../lynxwebsockets"],
   "scripts": {
     "build": "rspeedy build",
     "build:native": "rspeedy build && cp ./dist/main.lynx.bundle /Volumes/Storage/Projects/tamer4lynx/android/app/src/main/assets/main.lynx.bundle",

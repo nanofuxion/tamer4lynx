@@ -1,0 +1,6 @@
+[submodule "packages/jiggle"]
+	path = packages/jiggle
+	url = https://github.com/nanofuxion/jiggle
+[submodule "packages/lynxwebsockets"]
+	path = packages/lynxwebsockets
+	url = https://github.com/nanofuxion/lynxwebsockets
