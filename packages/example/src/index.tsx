@@ -1,5 +1,5 @@
 import '@lynx-js/react/debug'
-import "lynx-websockets"
+import "lynxwebsockets"
 import { root } from '@lynx-js/react'
 
 import { App } from './App.js'

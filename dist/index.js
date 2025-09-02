@@ -7303,7 +7303,7 @@ var {
   Help
 } = import__.default;
 // package.json
-var version = "0.0.0";
+var version = "0.0.1";
 
 // src/android/create.ts
 import fs2 from "fs";
