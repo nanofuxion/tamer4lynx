@@ -6,8 +6,8 @@
   "private": true,
   "description": "A CLI tool for managing LynxJS native modules.",
   "bin": {
-    "tamer": "./index.js",
-    "t4l": "./index.js"
+    "tamer": "./dist/index.js",
+    "t4l": "./dist/index.js"
   },
   "workspaces": [
     "packages/example",
@@ -21,6 +21,10 @@
     "cli",
     "android"
   ],
+  "scripts": {
+    "build": "bun run build.ts",
+    "prepublishOnly": "bun run build"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node": "^24.1.0",
